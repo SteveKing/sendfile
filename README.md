@@ -1,28 +1,52 @@
 # sendfile
 Send files from a remote host and receive them using iTerm2's coprocess feature.
 
-## Background
+## The Problem
 
 I often ssh to remote machines. Sometimes it's a direct connection, but more
 often than not I have to first login to a corporate jumphost, then ssh from
 there to a deployment leader, then from there to my target machine. It's a royal
 pain if I need to copy files back to my Mac. I either have to set up a series of
 ssh tunnels (usually forbidden by policy) or have to copy files from one host to
-another across each hop (often not an option because I don't have write
-permission to one or more intermediates). What's a guy to do?
+another across each hop (usually forbidden by lack of write permission on the
+intermediaries).
 
-I thought back to Ye Olden Dayes of dial-up bulletin board systems. They had a
-nice simple way to copy files: Zmodem.  You could send a file from the remote
-end then switch to Zmodem receive mode on the local end. If you had a
-particularly sophisticated terminal program it would detect the Zmodem signature
-and automatically start receiving.  If only we had something like that these
-days...
+I need a way to transmit files over the existing ssh stdio. Ideally I'd use
+something like zmodem which is designed for this very purpose. Unfortunately
+it's not installed on the remote machines, and I don't have the ability to
+install new software.
 
-Zmodem is still around.  The modern Unix-y package is called 'lrzsz' and it
-compiles and runs on darned near anything.  Except... It's not pre-installed on
-my target systems, and I don't have permission to install anything. Scratch
-that.
+## The Solution
 
-But the idea is good. I just need to write the file transfer protocol myself. In
-a small enough shell script that I can "upload" it using the same hotkey macro
-which sets up all my bash aliases.
+My solution is sendfile.  The sending end relies only on tools that are already
+installed on my remote machines: bash, tar, and base64.  The 'sendfile' command
+is only six lines of shell script. The 'recvfile' command on my Mac is a custom
+Python script.
+
+Sendfile starts by sending a unique string that I can use as a trigger in iTerm.
+When iTerm sees the string it runs recvfile as a co-process.  Sendfile sends
+a base64-encoded tar file which recvfile unpacks.
+
+## Setup
+
+1. Put recvfile.py somewhere convenient on your Mac.
+
+2. Set up the following trigger in your iTerm profile:
+
+    Regular Expression: ^\s*-\*-\{\{SENDFILE\}\}-\*-\s*$
+    Action: Run Silent Coprocess...
+    Parameters: /usr/bin/python /path/to/recvfile.py
+
+3. On the remote machine, source 'sendfile.sh' (or copy the sendfile function
+   into your .bashrc).
+
+## Usage
+
+On the remote machine type "sendfile filename".  Multiple filenames can be
+given. You'll see the start string '-*-{{SENDFILE}}-*-' printed out, after which
+iTerm will execute 'recvfile.py'.  The received files are placed in ~/Downloads
+in a new directory named for the remote hostname and the current date/time.
+
+## Author
+
+Copyright (c) 2016 Steve King, <steve@narbat.com>

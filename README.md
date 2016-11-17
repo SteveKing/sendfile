@@ -26,9 +26,3 @@ that.
 But the idea is good. I just need to write the file transfer protocol myself. In
 a small enough shell script that I can "upload" it using the same hotkey macro
 which sets up all my bash aliases.
-
-# License
-
-Copyright (c) 2016 by Steve King <steve@narbat.com>
-Permission is given to use and modify this code for any purpose, with or without
-attribution. No warranty of any kind is expressed or implied.

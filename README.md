@@ -33,9 +33,9 @@ a base64-encoded tar file which recvfile unpacks.
 
 2. Set up the following trigger in your iTerm profile:
 
-    * Regular Expression: ^\s*-\*-\{\{SENDFILE\}\}-\*-\s*$
-    * Action: Run Silent Coprocess...
-    * Parameters: /usr/bin/python /path/to/recvfile.py
+    * Regular Expression: `^\s*-\*-\{\{SENDFILE\}\}-\*-\s*$`
+    * Action: `Run Silent Coprocess...`
+    * Parameters: `/usr/bin/python /path/to/recvfile.py`
 
 3. On the remote machine, source 'sendfile.sh' (or copy the sendfile function
    into your .bashrc).
@@ -43,9 +43,9 @@ a base64-encoded tar file which recvfile unpacks.
 ## Usage
 
 On the remote machine type "sendfile filename".  Multiple filenames can be
-given. You'll see the start string '-\*-{{SENDFILE}}-\*-' printed out, after
+given. You'll see the start string `-*-{{SENDFILE}}-*-` printed out, after
 which iTerm will execute 'recvfile.py'.  The received files are placed in
-~/Downloads in a new directory named for the remote hostname and the current
+`~/Downloads/` in a new directory named for the remote hostname and the current
 date/time.
 
 ## Author
